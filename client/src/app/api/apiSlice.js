@@ -17,7 +17,24 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Note'],
     }),
+    getDoubts: builder.query({
+      query: () => '/doubts',
+      providesTags: ['Doubt'],
+    }),
+    createDoubt: builder.mutation({
+      query: (newDoubt) => ({
+        url: '/doubts',
+        method: 'POST',
+        body: newDoubt,
+      }),
+      invalidatesTags: ['Doubt'],
+    }),
   }),
 });
 
-export const { useGetNotesQuery, useCreateNoteMutation } = apiSlice;
+export const {
+  useGetNotesQuery,
+  useCreateNoteMutation,
+  useGetDoubtsQuery,
+  useCreateDoubtMutation,
+} = apiSlice;
