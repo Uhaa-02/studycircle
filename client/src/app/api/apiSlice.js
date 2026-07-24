@@ -29,6 +29,18 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Doubt'],
     }),
+    getAnswersForDoubt: builder.query({
+      query: (doubtId) => `/answers/doubt/${doubtId}`,
+      providesTags: ['Answer'],
+    }),
+    createAnswer: builder.mutation({
+      query: (newAnswer) => ({
+        url: '/answers',
+        method: 'POST',
+        body: newAnswer,
+      }),
+      invalidatesTags: ['Answer'],
+    }),
   }),
 });
 
@@ -37,4 +49,6 @@ export const {
   useCreateNoteMutation,
   useGetDoubtsQuery,
   useCreateDoubtMutation,
+  useGetAnswersForDoubtQuery,
+  useCreateAnswerMutation,
 } = apiSlice;

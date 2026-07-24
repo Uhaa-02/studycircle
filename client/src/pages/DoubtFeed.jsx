@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useGetDoubtsQuery, useCreateDoubtMutation } from '../app/api/apiSlice';
 
 function DoubtFeed() {
@@ -12,7 +13,7 @@ function DoubtFeed() {
     e.preventDefault();
     try {
       await createDoubt({
-        postedBy: '665f1a2b3c4d5e6f7a8b9c0d', // placeholder until real auth exists
+        postedBy: '665f1a2b3c4d5e6f7a8b9c0d',
         title,
         description,
         tags: [],
@@ -64,7 +65,9 @@ function DoubtFeed() {
         <ul className="space-y-2">
           {doubts.map((doubt) => (
             <li key={doubt._id} className="border p-3 rounded">
-              <p className="font-semibold">{doubt.title}</p>
+              <Link to={`/doubts/${doubt._id}`} className="font-semibold text-blue-700 hover:underline">
+                {doubt.title}
+              </Link>
               <p className="text-sm text-gray-600">{doubt.description}</p>
             </li>
           ))}
