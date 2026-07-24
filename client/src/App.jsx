@@ -1,10 +1,26 @@
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import BrowseNotes from './pages/BrowseNotes';
+import DoubtFeed from './pages/DoubtFeed';
+import Profile from './pages/Profile';
+
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <h1 className="text-4xl font-bold text-blue-600">
-        StudyCircle
-      </h1>
-    </div>
+    <BrowserRouter>
+      <nav className="flex gap-4 p-4 bg-gray-800 text-white">
+        <Link to="/">Home</Link>
+        <Link to="/notes">Notes</Link>
+        <Link to="/doubts">Doubts</Link>
+        <Link to="/profile">Profile</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/notes" element={<BrowseNotes />} />
+        <Route path="/doubts" element={<DoubtFeed />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
