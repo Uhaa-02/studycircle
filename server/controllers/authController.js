@@ -1,5 +1,10 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+
+const generateToken = (userId) => {
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
+};
 
 // Signup
 const signup = async (req, res) => {
@@ -22,12 +27,15 @@ const signup = async (req, res) => {
       semester,
     });
 
+    const token = generateToken(user._id);
+
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       branch: user.branch,
       semester: user.semester,
+      token,
     });
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -49,12 +57,15 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
+    const token = generateToken(user._id);
+
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
       branch: user.branch,
       semester: user.semester,
+      token,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
