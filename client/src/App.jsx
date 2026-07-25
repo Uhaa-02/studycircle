@@ -6,6 +6,7 @@ import DoubtFeed from './pages/DoubtFeed';
 import DoubtDetail from './pages/DoubtDetail';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/doubts/:id" element={<DoubtDetail />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </BrowserRouter>
   );
