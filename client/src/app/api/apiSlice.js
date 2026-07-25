@@ -2,9 +2,32 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'http://localhost:5000/api',
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        headers.set('authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   tagTypes: ['Note', 'Doubt', 'Answer'],
   endpoints: (builder) => ({
+    signup: builder.mutation({
+      query: (userData) => ({
+        url: '/auth/signup',
+        method: 'POST',
+        body: userData,
+      }),
+    }),
+    login: builder.mutation({
+      query: (credentials) => ({
+        url: '/auth/login',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
     getNotes: builder.query({
       query: () => '/notes',
       providesTags: ['Note'],
@@ -45,6 +68,8 @@ export const apiSlice = createApi({
 });
 
 export const {
+  useSignupMutation,
+  useLoginMutation,
   useGetNotesQuery,
   useCreateNoteMutation,
   useGetDoubtsQuery,
