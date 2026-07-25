@@ -71,6 +71,20 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Answer'],
     }),
+    upvoteNote: builder.mutation({
+  query: (id) => ({
+    url: `/notes/${id}/upvote`,
+    method: 'POST',
+  }),
+  invalidatesTags: ['Note'],
+}),
+upvoteAnswer: builder.mutation({
+  query: (id) => ({
+    url: `/answers/${id}/upvote`,
+    method: 'POST',
+  }),
+  invalidatesTags: ['Answer'],
+}),
   }),
 });
 
@@ -84,4 +98,6 @@ export const {
   useCreateDoubtMutation,
   useGetAnswersForDoubtQuery,
   useCreateAnswerMutation,
+  useUpvoteNoteMutation,
+  useUpvoteAnswerMutation,
 } = apiSlice;

@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useGetNotesQuery, useCreateNoteMutation, useDeleteNoteMutation } from '../app/api/apiSlice';
+import { useGetNotesQuery, useCreateNoteMutation, useDeleteNoteMutation, useUpvoteNoteMutation } from '../app/api/apiSlice';
 import FormInput from '../components/FormInput';
 
 function BrowseNotes() {
   const { data: notes, isLoading, isError, error } = useGetNotesQuery();
   const [createNote, { isLoading: isCreating }] = useCreateNoteMutation();
   const [deleteNote] = useDeleteNoteMutation();
+  const [upvoteNote] = useUpvoteNoteMutation();
 
   const [title, setTitle] = useState('');
   const [subject, setSubject] = useState('');
@@ -49,6 +50,14 @@ function BrowseNotes() {
     } catch (err) {
       console.error('Failed to delete note:', err);
       alert(err.data?.message || 'Failed to delete note');
+    }
+  };
+
+  const handleUpvote = async (id) => {
+    try {
+      await upvoteNote(id).unwrap();
+    } catch (err) {
+      console.error('Failed to upvote note:', err);
     }
   };
 
@@ -110,6 +119,7 @@ function BrowseNotes() {
               <div className="mt-1">
                 <a href={note.fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 text-sm hover:underline">View File</a>
                 <button onClick={() => handleDelete(note._id)} className="text-red-600 text-sm hover:underline ml-2">Delete</button>
+                <button onClick={() => handleUpvote(note._id)} className="text-green-700 text-sm hover:underline ml-2">▲ {note.upvotes.length}</button>
               </div>
             </li>
           ))}
