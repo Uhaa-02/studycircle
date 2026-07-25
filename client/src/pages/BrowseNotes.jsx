@@ -11,6 +11,7 @@ function BrowseNotes() {
   const [semester, setSemester] = useState('');
   const [branch, setBranch] = useState('');
   const [tagsInput, setTagsInput] = useState('');
+  const [file, setFile] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,21 +21,23 @@ function BrowseNotes() {
         .map((t) => t.trim())
         .filter((t) => t.length > 0);
 
-      await createNote({
-        uploadedBy: '665f1a2b3c4d5e6f7a8b9c0d', // placeholder until real auth exists
-        title,
-        subject,
-        semester: Number(semester),
-        branch,
-        fileUrl: 'https://example.com/placeholder.pdf', // placeholder until Stage 7 (Cloudinary)
-        tags,
-      }).unwrap();
+      const formData = new FormData();
+      formData.append('uploadedBy', '665f1a2b3c4d5e6f7a8b9c0d');
+      formData.append('title', title);
+      formData.append('subject', subject);
+      formData.append('semester', semester);
+      formData.append('branch', branch);
+      tags.forEach((tag) => formData.append('tags', tag));
+      if (file) formData.append('file', file);
+
+      await createNote(formData).unwrap();
 
       setTitle('');
       setSubject('');
       setSemester('');
       setBranch('');
       setTagsInput('');
+      setFile(null);
     } catch (err) {
       console.error('Failed to create note:', err);
     }
@@ -58,12 +61,21 @@ function BrowseNotes() {
           onChange={(e) => setTagsInput(e.target.value)}
           placeholder="e.g. arrays, sorting, midterm"
         />
+        <div className="mb-3">
+          <label className="block text-sm font-medium text-gray-700 mb-1">File (PDF or image)</label>
+          <input
+            type="file"
+            onChange={(e) => setFile(e.target.files[0])}
+            required
+            className="border p-2 w-full rounded"
+          />
+        </div>
         <button
           type="submit"
           disabled={isCreating}
           className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
         >
-          {isCreating ? 'Creating...' : 'Add Note'}
+          {isCreating ? 'Uploading...' : 'Add Note'}
         </button>
       </form>
 
@@ -86,6 +98,9 @@ function BrowseNotes() {
                   ))}
                 </div>
               )}
+              <a href={note.fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 text-sm hover:underline">
+                View File
+              </a>
             </li>
           ))}
         </ul>
