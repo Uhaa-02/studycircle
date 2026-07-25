@@ -1,6 +1,6 @@
 const Note = require('../models/Note');
 const User = require('../models/User');
-
+const updateReputation = require('../utils/updateReputation');
 // Create a new note
 const createNote = async (req, res) => {
   try {
@@ -57,4 +57,27 @@ const deleteNote = async (req, res) => {
   }
 };
 
-module.exports = { createNote, getNotes, updateNote, deleteNote };
+const toggleUpvoteNote = async (req, res) => {
+  try {
+    const note = await Note.findById(req.params.id);
+    if (!note) return res.status(404).json({ message: 'Note not found' });
+
+    const userId = req.userId;
+    const hasUpvoted = note.upvotes.some((id) => id.toString() === userId);
+
+    if (hasUpvoted) {
+      note.upvotes.pull(userId);
+    } else {
+      note.upvotes.push(userId);
+    }
+
+    await note.save();
+    await updateReputation(note.uploadedBy);
+
+    res.json(note);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { createNote, getNotes, updateNote, deleteNote, toggleUpvoteNote };
