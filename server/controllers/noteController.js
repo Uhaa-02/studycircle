@@ -4,7 +4,11 @@ const User = require('../models/User');
 // Create a new note
 const createNote = async (req, res) => {
   try {
-    const note = await Note.create(req.body);
+    const noteData = {
+      ...req.body,
+      fileUrl: req.file ? req.file.path : req.body.fileUrl,
+    };
+    const note = await Note.create(noteData);
     res.status(201).json(note);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -27,4 +31,29 @@ const getNotes = async (req, res) => {
   }
 };
 
-module.exports = { createNote, getNotes };
+// Update a note
+const updateNote = async (req, res) => {
+  try {
+    const note = await Note.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!note) return res.status(404).json({ message: 'Note not found' });
+    res.json(note);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+// Delete a note
+const deleteNote = async (req, res) => {
+  try {
+    const note = await Note.findByIdAndDelete(req.params.id);
+    if (!note) return res.status(404).json({ message: 'Note not found' });
+    res.json({ message: 'Note deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { createNote, getNotes, updateNote, deleteNote };
