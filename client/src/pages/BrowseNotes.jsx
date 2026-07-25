@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { useGetNotesQuery, useCreateNoteMutation } from '../app/api/apiSlice';
+import { useGetNotesQuery, useCreateNoteMutation, useDeleteNoteMutation } from '../app/api/apiSlice';
 import FormInput from '../components/FormInput';
 
 function BrowseNotes() {
   const { data: notes, isLoading, isError, error } = useGetNotesQuery();
   const [createNote, { isLoading: isCreating }] = useCreateNoteMutation();
+  const [deleteNote] = useDeleteNoteMutation();
 
   const [title, setTitle] = useState('');
   const [subject, setSubject] = useState('');
@@ -22,7 +23,6 @@ function BrowseNotes() {
         .filter((t) => t.length > 0);
 
       const formData = new FormData();
-      formData.append('uploadedBy', '665f1a2b3c4d5e6f7a8b9c0d');
       formData.append('title', title);
       formData.append('subject', subject);
       formData.append('semester', semester);
@@ -40,6 +40,15 @@ function BrowseNotes() {
       setFile(null);
     } catch (err) {
       console.error('Failed to create note:', err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteNote(id).unwrap();
+    } catch (err) {
+      console.error('Failed to delete note:', err);
+      alert(err.data?.message || 'Failed to delete note');
     }
   };
 
@@ -98,9 +107,10 @@ function BrowseNotes() {
                   ))}
                 </div>
               )}
-              <a href={note.fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 text-sm hover:underline">
-                View File
-              </a>
+              <div className="mt-1">
+                <a href={note.fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 text-sm hover:underline">View File</a>
+                <button onClick={() => handleDelete(note._id)} className="text-red-600 text-sm hover:underline ml-2">Delete</button>
+              </div>
             </li>
           ))}
         </ul>

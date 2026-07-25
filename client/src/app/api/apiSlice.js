@@ -40,6 +40,13 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Note'],
     }),
+    deleteNote: builder.mutation({
+      query: (id) => ({
+        url: `/notes/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Note'],
+    }),
     getDoubts: builder.query({
       query: () => '/doubts',
       providesTags: ['Doubt'],
@@ -72,6 +79,7 @@ export const {
   useLoginMutation,
   useGetNotesQuery,
   useCreateNoteMutation,
+  useDeleteNoteMutation,
   useGetDoubtsQuery,
   useCreateDoubtMutation,
   useGetAnswersForDoubtQuery,
