@@ -6,6 +6,7 @@ const createNote = async (req, res) => {
   try {
     const noteData = {
       ...req.body,
+      uploadedBy: req.userId,
       fileUrl: req.file ? req.file.path : req.body.fileUrl,
     };
     const note = await Note.create(noteData);
