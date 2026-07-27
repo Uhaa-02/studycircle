@@ -72,4 +72,13 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { signup, login };
+const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select('-passwordHash');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+module.exports = { signup, login, getMe };
