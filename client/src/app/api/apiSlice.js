@@ -85,6 +85,9 @@ upvoteAnswer: builder.mutation({
   }),
   invalidatesTags: ['Answer'],
 }),
+getMe: builder.query({
+  query: () => '/auth/me',
+}),
   }),
 });
 
@@ -100,4 +103,5 @@ export const {
   useCreateAnswerMutation,
   useUpvoteNoteMutation,
   useUpvoteAnswerMutation,
+  useGetMeQuery,
 } = apiSlice;
